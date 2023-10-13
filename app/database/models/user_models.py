@@ -10,11 +10,11 @@ from sqlalchemy import (
     VARCHAR,
     FLOAT
 )
-from sqlalchemy.orm import declarative_base, relationship, sessionmaker
-import params.config as env
+from sqlalchemy.orm import DeclarativeBase, relationship, sessionmaker
 from sqlalchemy.dialects.postgresql import JSONB
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 class offices(Base): #отделения банка
     __tablename__ = 'offices'

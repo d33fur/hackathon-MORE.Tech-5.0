@@ -8,6 +8,7 @@ from database.db import db_create
 
 app: FastAPI = FastAPI()
 
+
 @app.on_event('startup')
 async def startup():
     db_create()
