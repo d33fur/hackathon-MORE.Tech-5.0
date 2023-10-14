@@ -84,7 +84,14 @@ class atms(Base): #банкоматы
     latitude = Column(FLOAT, nullable=False)
     longitude = Column(FLOAT, nullable=False)
     allDay = Column(Boolean, nullable=True)
-    
+
+class servicestime(Base): #время оказания каждой услуги
+    __tablename__ = 'servicestime'
+
+    id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
+    name = Column(String(200), nullable=False)
+    time = Column(Integer, nullable=False)
+        
 #class banks(Base): #отделения банка
 #    tablename = 'banks'
 #
