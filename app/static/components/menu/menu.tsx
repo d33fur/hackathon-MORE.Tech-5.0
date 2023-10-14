@@ -1,9 +1,9 @@
 import React from "react";
 import axios from 'axios';
 
-import { Button, Space, Segmented, Popover } from "antd";
+import { Button, Space, Segmented, Popover, Dropdown } from "antd";
 import { useWindowParams } from "../../hooks/useWindowParams";
-//import Plot from 'react-plotly.js';
+import Plot from 'react-plotly.js';
 
 import freeLoad from "../../img/free.svg"
 import mediumLoad from "../../img/medium.svg"
@@ -13,6 +13,12 @@ import metro from "../../img/metro.svg"
 import wheelchair from "../../img/wheelchair.svg" 
 import coins from "../../img/coins.svg"
 
+import walk from "../../img/walk.svg" 
+import drive from "../../img/drive.svg"
+import bus from "../../img/bus.svg"
+
+import arrow from "../../img/arrow.svg"
+
 import "./menu.scss"
 
 const loadFactors = {
@@ -21,7 +27,20 @@ const loadFactors = {
     2: {text: "высокая загруженность", icon: hardLoad}
 }
 
-/*
+const data = {
+    "averageQueueTime": [
+        [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
+        [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
+        [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
+        [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
+        [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
+        [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
+        [0, 0, 0, 0, 20, 10, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0]
+    ]
+}
+
+
+
 const content = <>
     <div className="loadGraph">
         <Plot
@@ -62,15 +81,33 @@ const content = <>
             config={ {displayModeBar: false, displaylogo: false} }
         />
     </div>
-</>*/
-const content = <></>
+</>
+//const content = <></>
+const items = [{
+        key: "walk",
+        label: (<>
+            <img src={walk}></img>
+        </>)
+    },{
+        key: "drive",
+        label: (<>
+            <img src={drive}></img>
+        </>)
+    },{
+        key: "public",
+        label: (<>
+            <img src={bus}></img>
+        </>)
+    }
+]
 
 
 
 type OfficeInfoProps = {
     loadFactor?: Number
     name?: String
-    address?: String  
+    address?: String 
+    onClick?: any 
 }
 type OfficeInfoState = {
     loadFactor?: Number
@@ -78,6 +115,7 @@ type OfficeInfoState = {
     address?: String 
 }
 class OfficeInfo extends React.Component<OfficeInfoProps, OfficeInfoState> {
+    onClick
     loadFactor = 2
     name = ""
     address = ""
@@ -88,6 +126,7 @@ class OfficeInfo extends React.Component<OfficeInfoProps, OfficeInfoState> {
     }
     constructor (props) {
         super(props)
+        this.onClick = props.onClick 
         this.loadFactor = props.loadFactor
         this.name = props.name
         this.address = props.address
@@ -115,18 +154,21 @@ class OfficeInfo extends React.Component<OfficeInfoProps, OfficeInfoState> {
         }
     }
     render = () => {return<>
-        <li>
+        <li onClick={this.onClick}>
             <div className="columns">
                 <div>
                     <h2>{this.state.name}</h2>
                     <h3 className="min-t">{this.state.address}</h3>
                 </div>
-                <div style={{flexShrink: 0}}>
-                    <h5 className="min-t">3 мин • 300м</h5>
+                <div style={{flexShrink: 0, display: "flex", alignItems:"center "}}>
+                    <Dropdown menu = {{ items }} placement="bottom">
+                        <img src={walk}></img>
+                    </Dropdown>
+                    <h6 className="min-t">3 мин • 300м</h6>
                 </div>
             </div>
         </li>
-        <li>
+        <li onClick={this.onClick}>
             <Popover content={content} trigger="click"><div className="Option">
                 <img src={loadFactors[this.state.loadFactor].icon}></img>
                 <div className="optionColumn">
@@ -249,6 +291,7 @@ export class Menu extends React.Component {
     loadFactor = 2
     state = {
         top: 60,
+        page: 0,
         data: {
             averageQueueTime: [[],[],[],[],[],[],[]],
             salePointName: "",
@@ -261,7 +304,7 @@ export class Menu extends React.Component {
     constructor(props) {
         super(props)
         const day = new Date().getDay()
-        axios.get("http://proxy.koteyko.space/api/get_branches")
+        axios.get("http://proxy.koteyko.space:7000/api/get_branches")
         .then(res => {
             this.setState({data: JSON.parse(res.data).branches[0]})
             console.log(JSON.parse(res.data).branches[0])
@@ -281,38 +324,79 @@ export class Menu extends React.Component {
             top: this.state.top == 60 ? 5 : 60,
         })
     }
+    handlePrevPageChange = () => {
+        this.setState({
+            page: 0
+        })
+    }
+    handleNextPageChange = () => {
+        this.setState({
+            page: 1
+        })
+    }
     render = () => {
         return(<>
             <div className="Menu" style={{top:`${this.state.top}vh`, height: `${100-this.state.top}vh`}} >
                 <div className="lineBox" onClick={this.handleClick}><div className="line"></div></div>
-                <ul>
-                    <OfficeInfo 
-                        name={this.state.data.salePointName}
-                        address={this.state.data.address}
-                        loadFactor={this.loadFactor}
-                    />
-                    <li>
-                        <Space.Compact direction="vertical"><Segmented 
-                            options={[{
-                                label: (<div>Физлица</div>),
-                                value: "Физлица"
-                            },{
-                                label: (<div>Юрлица</div>),
-                                value: "Юрлица"
-                            }]}
+                <img src={arrow} className="fixedArrow" onClick={this.handlePrevPageChange}></img>
+                <div className="swap">
+                    <ul style={{left: this.state.page==1 ? `-101.5vw` : 0}}>
+                        <OfficeInfo 
+                            name={this.state.data.salePointName}
+                            address={this.state.data.address}
+                            loadFactor={this.loadFactor}
+                            onClick={this.handleNextPageChange}
                         />
-                        </Space.Compact>
-                    </li>
-                    <OfficeSchedule
-                        schedule={this.state.data.openHoursIndividual}
-                    />
-                    <OfficeMetros
-                        metros={this.state.data.metroStation}
-                    />
-                    <OfficeCurrencies
-                        currencies={this.state.data.currencies}
-                    />
-                </ul>
+                        <OfficeInfo 
+                            name={this.state.data.salePointName}
+                            address={this.state.data.address}
+                            loadFactor={this.loadFactor}
+                            onClick={this.handleNextPageChange}
+                        />
+                        <OfficeInfo 
+                            name={this.state.data.salePointName}
+                            address={this.state.data.address}
+                            loadFactor={this.loadFactor}
+                            onClick={this.handleNextPageChange}
+                        />
+                        <OfficeInfo 
+                            name={this.state.data.salePointName}
+                            address={this.state.data.address}
+                            loadFactor={this.loadFactor}
+                            onClick={this.handleNextPageChange}
+                        />
+                    </ul>
+                    <ul style={{left: this.state.page==1 ? `-101.5vw` : 0}}>
+                        <OfficeInfo 
+                            name={this.state.data.salePointName}
+                            address={this.state.data.address}
+                            loadFactor={this.loadFactor}
+                        />
+                        <li>
+                            <Space.Compact direction="vertical"><Segmented 
+                                options={[{
+                                    label: (<div>Физлица</div>),
+                                    value: "Физлица"
+                                },{
+                                    label: (<div>Юрлица</div>),
+                                    value: "Юрлица"
+                                }]}
+                            />
+                            </Space.Compact>
+                        </li>
+                        <OfficeSchedule
+                            schedule={this.state.data.openHoursIndividual}
+                        />
+                        <OfficeMetros
+                            metros={this.state.data.metroStation}
+                        />
+                        <OfficeCurrencies
+                            currencies={this.state.data.currencies}
+                        />
+                        <li><Button>Записаться на ближайшее время </Button></li>
+                        <li><Button>Проложить маршрут</Button></li>
+                    </ul>
+                </div>
             </div>
         </>)
     }
