@@ -43,55 +43,7 @@ async function getRoutes(start, endpoints) {
 
 var myMap;
 
-// Waiting for the API to load and DOM to be ready.
-ymaps.ready(init);
-function init () {
-    /**
-     * Creating an instance of the map and binding it to the container
-     * with the specified ID ("map").
-     */
-    myMap = new ymaps.Map('map', {
-        /**
-         * When initializing the map, you must specify
-         * its center and the zoom factor.
-         */
-        center: [55.76, 37.64], // Moscow
-        zoom: 10,
-        controls: []
-    }, {
-        searchControlProvider: 'yandex#search'
-    },
-    ), 
-    // Creating a geo object with the "Point" geometry type.
-    myGeoObject = new ymaps.GeoObject({
-        // The geometry description.
-        geometry: {
-            type: "Point",
-            coordinates: [55.8, 37.8]
-        },
-        // Properties.
-        properties: {
-            // The placemark content.
-            iconContent: 'I\'m draggable',
-            hintContent: 'Come on, drag already!'
-        }
-    }, {
-        /**
-         * Options.
-         * The placemark's icon will stretch to fit its contents.
-         */
-        preset: 'islands#blackStretchyIcon',
-        // The placemark can be dragged.
-        draggable: false
-    })
 
-    document.getElementById('destroyButton').onclick = function () {
-        // To destroy it, the "destroy" method is used.
-        myMap.destroy();
-    };
-    myMap.geoObjects
-        .add(myGeoObject);
-}
 
 
 if (root_tag) {

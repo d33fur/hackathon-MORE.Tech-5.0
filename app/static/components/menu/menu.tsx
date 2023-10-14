@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import { Button, Space, Segmented, Popover, Dropdown } from "antd";
 import { useWindowParams } from "../../hooks/useWindowParams";
-import Plot from 'react-plotly.js';
+//import Plot from 'react-plotly.js';
 
 import freeLoad from "../../img/free.svg"
 import mediumLoad from "../../img/medium.svg"
@@ -27,6 +27,7 @@ const loadFactors = {
     2: {text: "высокая загруженность", icon: hardLoad}
 }
 
+/*
 const data = {
     "averageQueueTime": [
         [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
@@ -82,7 +83,8 @@ const content = <>
         />
     </div>
 </>
-//const content = <></>
+*/
+const content = <></>
 const items = [{
         key: "walk",
         label: (<>
