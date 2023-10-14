@@ -1,4 +1,5 @@
 import React from "react";
+import axios from 'axios';
 
 import { Button, Space, Segmented, Popover } from "antd";
 import { useWindowParams } from "../../hooks/useWindowParams";
@@ -13,32 +14,6 @@ import wheelchair from "../../img/wheelchair.svg"
 import coins from "../../img/coins.svg"
 
 import "./menu.scss"
-
-const data = {
-    "salePointName": "ДО «ГУМ» Филиала № 7701 Банка ВТБ (ПАО)",
-    "address": "Г. Москва, Красная площадь, д. 3",
-    "openHoursIndividual": "круглосуточно",
-    "hasRamp": true ,
-    "metroStation": [
-        "Октябрьская (Кольцевая линия)",
-        "Октябрьская (Калужско-Рижская линия)",
-        "Шаболовская (Калужско-Рижская линия)"
-    ],
-    "averageQueueTime": [
-        [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
-        [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
-        [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
-        [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
-        [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
-        [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
-        [0, 0, 0, 0, 20, 10, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0]
-    ],
-    "currencies": [
-        {name: "рубль", amount: 10000},
-        {name: "доллар", amount: 500},
-        {name: "евро", amount: 800}
-    ]
-}
 
 const loadFactors = {
     0: {text: "низкая загруженность", icon: freeLoad},
@@ -97,23 +72,54 @@ type OfficeInfoProps = {
     name?: String
     address?: String  
 }
-type OfficeInfoState = {}
+type OfficeInfoState = {
+    loadFactor?: Number
+    name?: String
+    address?: String 
+}
 class OfficeInfo extends React.Component<OfficeInfoProps, OfficeInfoState> {
     loadFactor = 2
     name = ""
     address = ""
+    state = {
+        loadFactor: 2,
+        name: "",
+        address: ""
+    }
     constructor (props) {
         super(props)
         this.loadFactor = props.loadFactor
         this.name = props.name
         this.address = props.address
+        this.state = {
+            loadFactor: this.loadFactor,
+            name: this.name,
+            address: this.address
+        }
+    }
+    componentDidUpdate(prevProps){
+        if(prevProps.loadFactor !== this.props.loadFactor){
+            this.setState({          
+                loadFactor: this.props.loadFactor
+            });
+        }
+        if(prevProps.name !== this.props.name){
+            this.setState({          
+                name: this.props.name
+            });
+        }
+        if(prevProps.address !== this.props.address){
+            this.setState({          
+                address: this.props.address
+            });
+        }
     }
     render = () => {return<>
         <li>
             <div className="columns">
                 <div>
-                    <h2>{this.name}</h2>
-                    <h3 className="min-t">{this.address}</h3>
+                    <h2>{this.state.name}</h2>
+                    <h3 className="min-t">{this.state.address}</h3>
                 </div>
                 <div style={{flexShrink: 0}}>
                     <h5 className="min-t">3 мин • 300м</h5>
@@ -122,9 +128,9 @@ class OfficeInfo extends React.Component<OfficeInfoProps, OfficeInfoState> {
         </li>
         <li>
             <Popover content={content} trigger="click"><div className="Option">
-                <img src={loadFactors[this.loadFactor].icon}></img>
+                <img src={loadFactors[this.state.loadFactor].icon}></img>
                 <div className="optionColumn">
-                    <h5 className="min-t">{loadFactors[this.loadFactor].text}</h5>
+                    <h5 className="min-t">{loadFactors[this.state.loadFactor].text}</h5>
                 </div>
             </div></Popover>
         </li>
@@ -134,13 +140,23 @@ class OfficeInfo extends React.Component<OfficeInfoProps, OfficeInfoState> {
 
 
 
-type OfficeScheduleProps = {schedule: Object}
-type OfficeScheduleState = {}
-class OfficeSchedule extends React.Component<OfficeScheduleProps, OfficeInfoState> {
-    schedule;
+type OfficeScheduleProps = {schedule?: Object}
+type OfficeScheduleState = {schedule?: Object}
+class OfficeSchedule extends React.Component<OfficeScheduleProps, OfficeScheduleState> {
+    schedule = "";
+    state = {
+        schedule: ""
+    }
     constructor (props) {
         super(props)
         this.schedule = props.schedule
+    }
+    componentDidUpdate(prevProps){
+        if(prevProps.schedule !== this.props.schedule){
+            this.setState({          
+                schedule: "всегда"
+            });
+        }
     }
     render = () => {return<>
         <li>
@@ -148,7 +164,7 @@ class OfficeSchedule extends React.Component<OfficeScheduleProps, OfficeInfoStat
                 <img src={clock}></img>
                 <div className="optionColumn">
                     <h3>Режим работы</h3>
-                    <h4 className="min-t">{this.schedule}</h4>
+                    <h4 className="min-t">{this.state.schedule}</h4>
                 </div>
             </div>
         </li>
@@ -158,12 +174,22 @@ class OfficeSchedule extends React.Component<OfficeScheduleProps, OfficeInfoStat
 
 
 type OfficeMetrosProps = {metros?: Array<String>}
-type OfficeMetrosState = {}
+type OfficeMetrosState = {metros?: Array<String>}
 class OfficeMetros extends React.Component<OfficeMetrosProps, OfficeMetrosState> {
     metros = []
+    state = {
+        metros: []
+    }
     constructor(props) {
         super(props)
         this.metros = props.metros ?? []
+    }
+    componentDidUpdate(prevProps){
+        if(prevProps.metros !== this.props.metros){
+            this.setState({          
+                metros: this.props.metros
+            });
+        }
     }
     render = () => {return<>
         <li>
@@ -171,7 +197,7 @@ class OfficeMetros extends React.Component<OfficeMetrosProps, OfficeMetrosState>
                 <img src={metro}></img>
                 <div className="optionColumn">
                     <h3>Метро рядом</h3>
-                    {Array.from(this.metros, (val, idx) => 
+                    {Array.from(this.state.metros, (val, idx) => 
                         <h4 key={idx} className="min-t">
                             {val}
                         </h4>
@@ -189,9 +215,19 @@ type OfficeCurrenciesProps = {currencies?: Array<Currency>}
 type OfficeCurrenciesState = {} 
 class OfficeCurrencies extends React.Component<OfficeCurrenciesProps, OfficeCurrenciesState> {
     currencies
+    state = {
+        currencies: []
+    }
     constructor(props) {
         super(props)
         this.currencies = props.currencies ?? []
+    }
+    componentDidUpdate(prevProps){
+        if(prevProps.currencies !== this.props.currencies){
+            this.setState({          
+                changedProp: this.props.currencies
+            });
+        }
     }
     render = () => {return<>
         <li>    
@@ -200,7 +236,7 @@ class OfficeCurrencies extends React.Component<OfficeCurrenciesProps, OfficeCurr
                 <div className="optionColumn">
                     <h3>Валюта</h3>
                     <h4 className="min-t">
-                        {(Array.from(this.currencies, (val: Currency, _) => val.name).join(", "))}
+                        {(Array.from(this.state.currencies, (val: Currency, _) => val.name).join(", "))}
                     </h4>
                 </div>
             </div>
@@ -212,13 +248,28 @@ class OfficeCurrencies extends React.Component<OfficeCurrenciesProps, OfficeCurr
 export class Menu extends React.Component {
     loadFactor = 2
     state = {
-        top: 60
+        top: 60,
+        data: {
+            averageQueueTime: [[],[],[],[],[],[],[]],
+            salePointName: "",
+            address: "",
+            openHoursIndividual: "",
+            metroStation: [],
+            currencies: [],
+        }
     }
     constructor(props) {
         super(props)
         const day = new Date().getDay()
+        axios.get("http://proxy.koteyko.space/api/get_branches")
+        .then(res => {
+            this.setState({data: JSON.parse(res.data).branches[0]})
+            console.log(JSON.parse(res.data).branches[0])
+            setTimeout(() => {console.log(this.state.data.salePointName), 500})
+            
+        })
         let totalAverageQueueTime = 0
-        for (let time of data.averageQueueTime[day]) {
+        for (let time of this.state.data.averageQueueTime[day]) {
             totalAverageQueueTime += time / 24
         }  
         if (totalAverageQueueTime < 10) this.loadFactor = 1
@@ -236,8 +287,8 @@ export class Menu extends React.Component {
                 <div className="lineBox" onClick={this.handleClick}><div className="line"></div></div>
                 <ul>
                     <OfficeInfo 
-                        name={data.salePointName}
-                        address={data.address}
+                        name={this.state.data.salePointName}
+                        address={this.state.data.address}
                         loadFactor={this.loadFactor}
                     />
                     <li>
@@ -253,13 +304,13 @@ export class Menu extends React.Component {
                         </Space.Compact>
                     </li>
                     <OfficeSchedule
-                        schedule={data.openHoursIndividual}
+                        schedule={this.state.data.openHoursIndividual}
                     />
                     <OfficeMetros
-                        metros={data.metroStation}
+                        metros={this.state.data.metroStation}
                     />
                     <OfficeCurrencies
-                        currencies={data.currencies}
+                        currencies={this.state.data.currencies}
                     />
                 </ul>
             </div>

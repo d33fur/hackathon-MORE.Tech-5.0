@@ -1,5 +1,7 @@
 .ant-input-group-wrapper  {
-    margin: calc(var(--step) * 2.5); /* 20px */;
+    position: fixed;
+    left: calc(var(--step) * 2.5); /* 20px */;
+    top: calc(var(--step) * 2.5); /* 20px */;
     font-size: calc(var(--step) * 2.5); /* 20px */;
     height: calc(var(--step) * 4); /* n0px */;
     width: calc(100vw - calc(var(--step) * 2.5 * 2));
@@ -8,6 +10,7 @@
     input {
         height: calc(var(--step) * 4); /* n0px */;
     }
+    z-index: 20;
 }
 
 .ant-input-wrapper {
