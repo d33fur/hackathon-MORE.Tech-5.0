@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from database.models.user_models import Base
 from database.parse import parse
-from params import confing as env
+from params import config as env
 
 URL = f'postgresql+psycopg2://{env.DBUSER}:{env.DBPASSWORD}@{env.DBHOST}:{env.DBPORT}/{env.DBNAME}'
 

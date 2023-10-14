@@ -84,6 +84,8 @@ function init () {
         // The placemark can be dragged.
         draggable: false
     })
+    addBranchToMap(0, 55.766045, 37.638081, 2)
+
 
     document.getElementById('destroyButton').onclick = function () {
         // To destroy it, the "destroy" method is used.
@@ -91,6 +93,25 @@ function init () {
     };
     myMap.geoObjects
         .add(myGeoObject);
+
+}
+
+function addBranchToMap(branchId, lat, lon, loadFactors) {
+    const markerElement = document.createElement('div');
+    markerElement.className = 'marker-class';
+    markerElement.innerText = "I'm marker!";
+
+    const marker = new YMapMarker(
+    {
+        source: 'markerSource',
+        coordinates: [lon, lat],
+        draggable: true,
+        mapFollowsOnDrag: true
+    },
+    markerElement
+    );
+
+    map.addChild(marker);
 }
 
 

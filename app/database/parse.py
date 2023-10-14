@@ -1,12 +1,15 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database.models.user_models import offices, atms, Base
-from params import confing as env
+#from database.db import drop_everything
+from params import config as env
 import json
-
-
+import random
 URL = f'postgresql+psycopg2://{env.DBUSER}:{env.DBPASSWORD}@{env.DBHOST}:{env.DBPORT}/{env.DBNAME}'
-engine = create_engine(URL)
+engine = create_engine(URL, echo=False)
+
+#drop_everything(engine)
+#Base.metadata.create_all(engine)
 
 def parse():
     Session = sessionmaker(bind=engine)
@@ -16,8 +19,12 @@ def parse():
             data = json.load(file)
             for i in data:
                 if i["suoAvailability"] == "Y": # замена suoAvailability в bool
+                if i["suoAvailability"] == "Y": # замена suoAvailability в bool
                     i["suoAvailability"] = True
                 else:
+                    i["suoAvailability"] = False 
+                    
+                if i["hasRamp"] == "Y": # замена hasRamp в bool
                     i["suoAvailability"] = False 
                     
                 if i["hasRamp"] == "Y": # замена hasRamp в bool
@@ -345,6 +352,8 @@ def parse():
         
                 # перегон json в бд для atm
     try: 
+                # перегон json в бд для atm
+    try: 
         with open("database/atms.json") as file:
             data = json.load(file)
             for i in data["atms"]:
@@ -355,4 +364,5 @@ def parse():
         session.rollback()
         print(e)
 
-    session.close()
+    
+#parse()
