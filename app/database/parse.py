@@ -19,7 +19,6 @@ def parse():
             data = json.load(file)
             for i in data:
                 if i["suoAvailability"] == "Y": # замена suoAvailability в bool
-                if i["suoAvailability"] == "Y": # замена suoAvailability в bool
                     i["suoAvailability"] = True
                 else:
                     i["suoAvailability"] = False 
@@ -41,6 +40,9 @@ def parse():
                     i["rko"] = True
                 else:
                     i["rko"] = False
+
+                i['rko'] = False or i['rko']
+                
                 # станции метро в лист
                 # опции
                 
@@ -351,7 +353,7 @@ def parse():
         print(e)
         
                 # перегон json в бд для atm
-    try: 
+    #try: 
                 # перегон json в бд для atm
     try: 
         with open("database/atms.json") as file:

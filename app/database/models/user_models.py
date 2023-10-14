@@ -43,7 +43,7 @@ class offices(Base): #отделения банка
     longitude = Column(FLOAT, nullable=False)
     metroStation = Column(JSONB)
     distance = Column(Integer, nullable=False)
-    kep = Column(Boolean, nullable=True) # квалифицированный сертификат электронной подписи для бизнеса на USB-токене с поддержкой NFC
+    kep = Column(Boolean, default=False) # квалифицированный сертификат электронной подписи для бизнеса на USB-токене с поддержкой NFC
     myBranch = Column(Boolean, nullable=True)
     services = Column(JSONB)
 
@@ -54,10 +54,10 @@ class offices(Base): #отделения банка
             address = self.address,
             salePointCode = self.salePointCode,
             status = self.status,
-            openHours = self.openHours,
+            openHours = dict(self.openHours[0]),
             rko = self.rko,
             network = self.network,
-            openHoursIndividual = self.openHoursIndividual,
+            openHoursIndividual = dict(self.openHoursIndividual[0]),
             officeType = self.officeType,
             salePointFormat = self.salePointFormat,
             suoAvailability = self.suoAvailability,
@@ -68,7 +68,7 @@ class offices(Base): #отделения банка
             distance = self.distance,
             kep = self.kep,
             myBranch = self.myBranch,
-            services = self.services
+            services = self.services,
             #averageQueueTime = self.averageQueueTime,
             #currentQueue = self.currentQueue
         )
