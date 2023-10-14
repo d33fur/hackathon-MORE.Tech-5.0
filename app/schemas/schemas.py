@@ -18,8 +18,8 @@ class BranchModel(BaseModel):
     hasRamp: bool
     latitude: float
     longitude: float
-    metroStation: List[List]
-    distance: Optional [int] = 0
+    metroStation:  List[str]
+    distance:int = 0
     kep: bool # квалицифированная электронная подпись
     myBranch: bool = False
     services: Optional [List[str]] = []

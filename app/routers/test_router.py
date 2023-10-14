@@ -1,5 +1,7 @@
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
+from database import db
+from database.models import user_models
 
 from schemas.schemas import ATMsList, BranchModel, BranchesList
 from services.test_service import *
@@ -14,8 +16,8 @@ async def route_registration() -> JSONResponse:
     return JSONResponse(dict(data), status_code=status.HTTP_200_OK)
 '''
 
-@test_router.get('/get_branches', response_model=BranchesList)
-async def get_branches() -> JSONResponse:
+@test_router.get('/get_test_branches', response_model=BranchesList)
+async def get_test_branches() -> JSONResponse:
     branch = BranchModel(id=0,
                         salePointName = "ДО «ГУМ» Филиала № 7701 Банка ВТБ (ПАО)",
                         address = "Г. Москва, Красная площадь, д. 3",
@@ -30,9 +32,9 @@ async def get_branches() -> JSONResponse:
                         latitude=55.766045,
                         longitude=37.638081,
                         metroStation = [
-                            ["Октябрьская (Кольцевая линия)", 4],
-                            ["Октябрьская (Калужско-Рижская линия)", 6],
-                            ["Шаболовская (Калужско-Рижская линия)", 10]
+                            "Октябрьская (Кольцевая линия)",
+                            "Октябрьская (Калужско-Рижская линия)",
+                            "Шаболовская (Калужско-Рижская линия)",
                         ],
                         kep=False,
                         services=['Сопровождение ипотечных и автокредитов'],
@@ -51,6 +53,17 @@ async def get_branches() -> JSONResponse:
     data = BranchesList(branches=branches)
     return JSONResponse(data.json(), status_code=status.HTTP_200_OK)
 
+@test_router.get('/get_branches', response_model=BranchesList)
+async def get_branches() -> JSONResponse:
+    #Session = db.sessionmaker(bind=db.engine)
+    #session = Session()
+    with db.sessionmaker(bind=db.engine)() as session:
+        branches = session.query(user_models.offices).all()
+    
+    branches = list(map(lambda x: x.to_json_scheme(), branches))
+    data = BranchesList(branches=branches)
+    return JSONResponse(data.json(), status_code=status.HTTP_200_OK)
+
 @test_router.get('/get_atms', response_model=ATMsList)
 async def get_atms() -> JSONResponse:
     atms = []
@@ -63,3 +76,4 @@ async def add_to_queue() -> JSONResponse:
     atms = []
     data = ATMsList(atms=atms)
     return JSONResponse(dict(data), status_code=status.HTTP_200_OK)
+
