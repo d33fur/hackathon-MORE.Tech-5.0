@@ -352,9 +352,10 @@ def parse():
         session.rollback()
         print(e)
         
+
+
                 # перегон json в бд для atm
-    #try: 
-                # перегон json в бд для atm
+
     try: 
         with open("database/atms.json") as file:
             data = json.load(file)
@@ -362,6 +363,21 @@ def parse():
                 session.add(atms(**i))   
                 session.commit()
         print(f"Данные успешно импортированы в таблицу {atms.__tablename__}.")
+    except Exception as e:
+        session.rollback()
+        print(e)
+    
+        
+
+                # перегон json в бд для servicetime
+        
+    try: 
+        with open("database/servicetime.json") as file:
+            data = json.load(file)
+            for i in data:
+                session.add(servicestime(name=i, time=data[i])) 
+                session.commit()
+        print(f"Данные успешно импортированы в таблицу {servicestime.__tablename__}.")
     except Exception as e:
         session.rollback()
         print(e)
