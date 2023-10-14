@@ -46,7 +46,7 @@ class offices(Base): #отделения банка
     kep = Column(Boolean, default=False) # квалифицированный сертификат электронной подписи для бизнеса на USB-токене с поддержкой NFC
     myBranch = Column(Boolean, nullable=True)
     services = Column(JSONB)
-    averageQueueTime = Column(JSONB)
+    averageQueueTime = Column(JSONB, default= [[0 for _ in range(24)] for _ in range(7)])
     currentQueue = Column(JSONB)
 
     def to_json_scheme(self):
