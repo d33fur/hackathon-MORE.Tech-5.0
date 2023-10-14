@@ -46,6 +46,8 @@ class offices(Base): #отделения банка
     kep = Column(Boolean, default=False) # квалифицированный сертификат электронной подписи для бизнеса на USB-токене с поддержкой NFC
     myBranch = Column(Boolean, nullable=True)
     services = Column(JSONB)
+    averageQueueTime = Column(JSONB)
+    currentQueue = Column(JSONB)
 
     def to_json_scheme(self):
         return schemas.BranchModel(
@@ -69,8 +71,8 @@ class offices(Base): #отделения банка
             kep = self.kep,
             myBranch = self.myBranch,
             services = self.services,
-            #averageQueueTime = self.averageQueueTime,
-            #currentQueue = self.currentQueue
+            averageQueueTime = self.averageQueueTime,
+            currentQueue = self.currentQueue
         )
 
     
