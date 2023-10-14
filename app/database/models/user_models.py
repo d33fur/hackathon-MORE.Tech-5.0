@@ -82,7 +82,6 @@ class atms(Base): #банкоматы
     latitude = Column(FLOAT, nullable=False)
     longitude = Column(FLOAT, nullable=False)
     allDay = Column(Boolean, nullable=True)
-    services = Column(JSONB)
     
 #class banks(Base): #отделения банка
 #    tablename = 'banks'
