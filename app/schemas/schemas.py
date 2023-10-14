@@ -33,7 +33,7 @@ class ATMModel(BaseModel):
     latitude: float
     longitude: float
     allDay: bool
-    services: List[str]
+    services: Optional[Dict[str, Dict[str, str]]]
     averageQueueTime: Optional [List[List[int]]] # время ожидания в очереди на каждый час дня недели, если час нерабочий пишем 0
 
 

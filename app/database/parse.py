@@ -42,7 +42,7 @@ def parse():
                     i["rko"] = False
 
                 i['rko'] = False or i['rko']
-                
+
                 # станции метро в лист
                 # опции
                 
@@ -359,7 +359,9 @@ def parse():
         with open("database/atms.json") as file:
             data = json.load(file)
             for i in data["atms"]:
-                session.add(atms(**i))   
+                i['allDay'] = i['allDay'] or False
+                #print(i['services'])
+                session.add(atms(**i))
                 session.commit()
         print(f"Данные успешно импортированы в таблицу {atms.__tablename__}.")
     except Exception as e:

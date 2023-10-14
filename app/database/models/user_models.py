@@ -83,7 +83,19 @@ class atms(Base): #банкоматы
     address = Column(String(200), nullable=False)
     latitude = Column(FLOAT, nullable=False)
     longitude = Column(FLOAT, nullable=False)
-    allDay = Column(Boolean, nullable=True)
+    allDay = Column(Boolean, nullable=False, default=False)
+    services = Column(JSONB)
+
+    def to_json_scheme(self):
+        return schemas.ATMModel(
+            id = self.id,
+            address = self.address,
+            latitude = self.latitude,
+            longitude = self.longitude,
+            allDay = self.allDay#,
+            #services = self.services
+        )
+
     
 #class banks(Base): #отделения банка
 #    tablename = 'banks'
