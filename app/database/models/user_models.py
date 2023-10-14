@@ -35,10 +35,11 @@ class offices(Base): #отделения банка
     hasRamp = Column(String(100), nullable=True) # Y/N
     latitude = Column(FLOAT, nullable=False)
     longitude = Column(FLOAT, nullable=False)
-    metroStation = Column(String(200), nullable=True)
+    metroStation = Column(JSONB)
     distance = Column(Integer, nullable=False)
     kep = Column(Boolean, nullable=True) # квалифицированный сертификат электронной подписи для бизнеса на USB-токене с поддержкой NFC
     myBranch = Column(Boolean, nullable=True)
+    services = Column(JSONB)
     
 class atms(Base): #банкоматы
     __tablename__ = 'atms'
