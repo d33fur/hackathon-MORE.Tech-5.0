@@ -1,0 +1,68 @@
+.Menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white; 
+    border-top-left-radius: calc(var(--step) * 3.75);
+    border-top-right-radius: calc(var(--step) * 3.75);
+    position: fixed;
+    top: 50vh;
+    width: 100vw;
+    padding: calc(var(--step) * 2.5);
+    transition: 100ms ease-in-out;
+    ul {
+        height: 100%;
+        overflow: scroll;
+        li {
+            margin-top: calc(var(--step) * 1.875);
+        }
+    }
+    .columns {
+        display: flex;
+        gap: calc(var(--step) * 1.875); 
+        flex-direction: row;
+    }
+    .Option {
+        display: flex;
+        align-items: center;
+        img {
+            height: calc(var(--step) * 2.5); 
+            margin-right: calc(var(--step) * 1.875); 
+        }
+        .optionColumn {
+
+        }
+    }
+}
+
+.lineBox {
+    display: flex;
+    flex-direction: column;
+    align-items:  center;
+    width: 100%;
+}
+
+.line {
+    background-color: #7B7E86;
+    width: calc(var(--step) * 5.625);
+    height: calc(var(--step) * 0.5);
+    border-radius: calc(var(--step) * 0.25);
+    margin-top: calc(var(--step) * 1.875);
+    margin-bottom: calc(var(--step) * 1.875);
+}
+
+.ant-space-compact, .ant-space-compact-block, .ant-segmented, .ant-segmented-group {
+    width: 100%;
+}
+
+
+
+
+//! Load Graph Styles
+.loadGraph {
+    width: 80vw;
+    height: calc(var(--step) * 20);
+    max-height: calc(var(--step) * 20);
+    background-color: red;
+    overflow: hidden;
+}

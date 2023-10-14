@@ -7,8 +7,8 @@ export function useWindowParams() {
     const size = useWindowSize();
     const ratio = usePixelRatio();
     const [width, height] = size
-    const k = (16 - 12) / (1920 - 300)
-    const b = (16 - k * 1920)
+    const k = (6 - 6) / (1920 - 300)
+    const b = (6 - k * 1920)
     const step = (k * width / ratio + b) * ratio
     const root = document.documentElement;
     root.style.setProperty('--step', `${step}px`)
