@@ -36,9 +36,13 @@ async def get_branches(user_cords: UserCoordinates) -> JSONResponse:
 
 @test_router.get('/get_atms', response_model=ATMsList)
 async def get_atms() -> JSONResponse:
-    atms = []
+    with db.sessionmaker(bind=db.engine)() as session:
+        atms = session.query(user_models.atms).all()
+    
+    atms = list(map(lambda x: x.to_json_scheme(), atms))
     data = ATMsList(atms=atms)
-    return JSONResponse(dict(data), status_code=status.HTTP_200_OK)
+
+    return JSONResponse(data.json(), status_code=status.HTTP_200_OK)
 
 @test_router.post('/add_to_queue')
 async def add_to_queue() -> JSONResponse:
