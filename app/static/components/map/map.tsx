@@ -11,7 +11,7 @@ import locationDefault from "../../img/Location_Default.svg"
 import locationHigh from "../../img/Location_High.svg"
 import locationLow from "../../img/Location_Low.svg"
 import locationMiddle from "../../img/Location_Middle.svg"
-import walk from "../../img/walk.svg"
+import point from "../../img/point.svg"
 
 
 function getRandomInt(max) {
@@ -113,7 +113,7 @@ export class OfficesMap extends React.Component {
             options={{
                 iconLayout: 'default#image',
                 iconImageSize: [96, 96],
-                iconImageHref: walk,
+                iconImageHref: point,
             }}
             onClick={() => {this.createRoute([55.728627, 37.609269])}}
         />
