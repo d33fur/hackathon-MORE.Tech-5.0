@@ -18,16 +18,16 @@
 возможность более точно рассчитывать загруженность
 
 ## Используемый стек:
-Docker
-nginix
-Flask
-Fastapi
-PostgreSQL
-pytorch
+- Docker
+- nginix
+- Flask
+- Fastapi
+- PostgreSQL
+- pytorch
 
-React
-AntD
-Yandex Maps API
+- React
+- AntD
+- Yandex Maps API
 
 ## Инструкции по запуску:
 Веса модели: [https://drive.google.com/file/d/1xsITYiZvcsIzx0cr-GiBx5ytDIcvlgzP/view?usp=sharing] должны лежать в каталоге app
