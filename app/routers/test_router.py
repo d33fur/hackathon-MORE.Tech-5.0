@@ -22,7 +22,7 @@ async def route_registration() -> JSONResponse:
 '''
 
 @test_router.get('/get_branches', response_model=BranchesList)
-async def get_branches(user_cords: UserCoordinates) -> JSONResponse:
+async def get_branches() -> JSONResponse:
     #Session = db.sessionmaker(bind=db.engine)
     #session = Session()
     with db.sessionmaker(bind=db.engine)() as session:
@@ -30,7 +30,7 @@ async def get_branches(user_cords: UserCoordinates) -> JSONResponse:
     
     branches = list(map(lambda x: x.to_json_scheme(), branches))
 
-    branches.sort(key=geo.DistanceSorter(user_cords.latitude, user_cords.longitude))
+    #branches.sort(key=geo.DistanceSorter(user_cords.latitude, user_cords.longitude))
     data = BranchesList(branches=branches)
     return JSONResponse(data.json(), status_code=status.HTTP_200_OK)
 
@@ -52,4 +52,4 @@ async def add_to_queue() -> JSONResponse:
 @test_router.get('/search')
 async def search(query:str) -> JSONResponse:
     data = ai_search.predict(query)
-    return JSONResponse(data, status_code=status.HTTP_200_OK)
+    return JSONResponse(data[:5], status_code=status.HTTP_200_OK)
