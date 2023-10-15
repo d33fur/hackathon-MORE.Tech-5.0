@@ -1,7 +1,6 @@
 .venv/
 env/
 __pycache__/
-*.ipynb
 *.vscode/
 
 package-lock.json
@@ -11,4 +10,4 @@ db_data/
 etc-letsencrypt
 dist/
 
-saved_weights_1_cpu.pt
+*pt
