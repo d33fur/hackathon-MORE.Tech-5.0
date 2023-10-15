@@ -1,7 +1,6 @@
 .venv/
 env/
 __pycache__/
-*.ipynb
 *.vscode/
 
 package-lock.json
@@ -10,3 +9,5 @@ node_modules/
 db_data/
 etc-letsencrypt
 dist/
+
+*pt

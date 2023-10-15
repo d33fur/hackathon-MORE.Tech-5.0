@@ -171,7 +171,7 @@ class OfficeInfo extends React.Component<OfficeInfoProps, OfficeInfoState> {
             </div>
         </li>
         <li onClick={this.onClick}>
-            <Popover content={content} trigger="click"><div className="Option">
+            <Popover content={content} trigger="click"><div className="Option" style={{display:"flex"}}>
                 <img src={loadFactors[this.state.loadFactor].icon}></img>
                 <div className="optionColumn">
                     <h5 className="min-t">{loadFactors[this.state.loadFactor].text}</h5>
@@ -291,30 +291,30 @@ class OfficeCurrencies extends React.Component<OfficeCurrenciesProps, OfficeCurr
 
 export class Menu extends React.Component {
     loadFactor = 2
+    onRouteCreate = (cords) => {}
     state = {
         top: 60,
         page: 0,
-        data: {
+        selectedOffice: 0,
+        data: [{
             averageQueueTime: [[],[],[],[],[],[],[]],
             salePointName: "",
             address: "",
             openHoursIndividual: "",
             metroStation: [],
             currencies: [],
-        }
+        }]
     }
     constructor(props) {
         super(props)
+        this.onRouteCreate = props.onRouteCreate
         const day = new Date().getDay()
         axios.get("http://proxy.koteyko.space:7000/api/get_branches")
         .then(res => {
-            this.setState({data: JSON.parse(res.data).branches[0]})
-            console.log(JSON.parse(res.data).branches[0])
-            setTimeout(() => {console.log(this.state.data.salePointName), 500})
-            
+            this.setState({data: JSON.parse(res.data).branches})            
         })
         let totalAverageQueueTime = 0
-        for (let time of this.state.data.averageQueueTime[day]) {
+        for (let time of this.state.data[this.state.selectedOffice].averageQueueTime[day]) {
             totalAverageQueueTime += time / 24
         }  
         if (totalAverageQueueTime < 10) this.loadFactor = 1
@@ -331,9 +331,10 @@ export class Menu extends React.Component {
             page: 0
         })
     }
-    handleNextPageChange = () => {
+    handleNextPageChange = (idx) => {
         this.setState({
-            page: 1
+            page: 1,
+            selectedOffice: idx
         })
     }
     render = () => {
@@ -343,35 +344,18 @@ export class Menu extends React.Component {
                 <img src={arrow} className="fixedArrow" onClick={this.handlePrevPageChange}></img>
                 <div className="swap">
                     <ul style={{left: this.state.page==1 ? `-101.5vw` : 0}}>
-                        <OfficeInfo 
-                            name={this.state.data.salePointName}
-                            address={this.state.data.address}
+                        {Array.from(this.state.data, (val, idx) => {return<OfficeInfo 
+                            key={idx}
+                            name={val.salePointName}
+                            address={val.address}
                             loadFactor={this.loadFactor}
-                            onClick={this.handleNextPageChange}
-                        />
-                        <OfficeInfo 
-                            name={this.state.data.salePointName}
-                            address={this.state.data.address}
-                            loadFactor={this.loadFactor}
-                            onClick={this.handleNextPageChange}
-                        />
-                        <OfficeInfo 
-                            name={this.state.data.salePointName}
-                            address={this.state.data.address}
-                            loadFactor={this.loadFactor}
-                            onClick={this.handleNextPageChange}
-                        />
-                        <OfficeInfo 
-                            name={this.state.data.salePointName}
-                            address={this.state.data.address}
-                            loadFactor={this.loadFactor}
-                            onClick={this.handleNextPageChange}
-                        />
+                            onClick={() => {this.handleNextPageChange(idx)}}
+                        />})}                    
                     </ul>
                     <ul style={{left: this.state.page==1 ? `-101.5vw` : 0}}>
                         <OfficeInfo 
-                            name={this.state.data.salePointName}
-                            address={this.state.data.address}
+                            name={this.state.data[this.state.selectedOffice].salePointName}
+                            address={this.state.data[this.state.selectedOffice].address}
                             loadFactor={this.loadFactor}
                         />
                         <li>
@@ -387,16 +371,16 @@ export class Menu extends React.Component {
                             </Space.Compact>
                         </li>
                         <OfficeSchedule
-                            schedule={this.state.data.openHoursIndividual}
+                            schedule={this.state.data[this.state.selectedOffice].openHoursIndividual}
                         />
                         <OfficeMetros
-                            metros={this.state.data.metroStation}
+                            metros={this.state.data[this.state.selectedOffice].metroStation}
                         />
                         <OfficeCurrencies
-                            currencies={this.state.data.currencies}
+                            currencies={this.state.data[this.state.selectedOffice].currencies}
                         />
                         <li><Button>Записаться на ближайшее время </Button></li>
-                        <li><Button>Проложить маршрут</Button></li>
+                        <li><Button onClick={() => {this.onRouteCreate([this.state.data[this.state.selectedOffice].latitude, this.state.data[this.state.selectedOffice].longitude])}}>Проложить маршрут</Button></li>
                     </ul>
                 </div>
             </div>

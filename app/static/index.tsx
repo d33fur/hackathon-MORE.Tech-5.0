@@ -10,6 +10,7 @@ import { App } from './app/app';
 
 const root_tag = document.getElementById('root')
 
+/*
 // ymaps.ready(init);
 async function getRoutes(start, endpoints) {
     var referencePoints = [start]
@@ -42,7 +43,7 @@ async function getRoutes(start, endpoints) {
 
 
 var myMap;
-
+*/
 
 
 
