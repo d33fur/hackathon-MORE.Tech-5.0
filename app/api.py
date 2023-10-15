@@ -4,9 +4,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routers import test_router
 from database.db import db_create
-
+from services import ai
 
 app: FastAPI = FastAPI()
+
+
 
 @app.on_event('startup')
 async def startup():
@@ -34,4 +36,5 @@ app.include_router(
 )
 
 if __name__ == '__main__':
+    #app.run(host="0.0.0.0", port=7000, debug=True)
     uvicorn.run(app, host='0.0.0.0', port=7000)

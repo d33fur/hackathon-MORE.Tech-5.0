@@ -8,6 +8,6 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-#CMD ["python3", "client.py"]
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:7000", "client:app"]
-#CMD ["gunicorn", "-w 4 -b 0.0.0.0:7000 client:app"]
+CMD ["python3", "client.py", "-u"]
+#CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:7000", "client:app"]
+#CMD ["python3", "client.app"]

@@ -1,6 +1,8 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
+import "./styles/fonts.scss";
+
 import { App } from './app/app';
 
 
@@ -39,20 +41,16 @@ async function getRoutes(start, endpoints) {
 }
 
 
-(async () => {
-    if (root_tag) {
-        const root = createRoot(root_tag)
-        let routes = await getRoutes([55.806788, 37.464589], [[55.728783, 37.610988], [55.734876, 37.59308]])
-        console.log(routes)
-        console.log(routes.length)
-        for (let idx=0; idx<routes.length; idx++) {
-            console.log(routes[idx])
-            console.log(routes[idx].properties.get('distance'))
-            console.log(routes[idx].properties.get('duration'))
-        }
-        root.render(
-            <App />
-        )
-    }
-    else console.log("Can't find html root tag id to start app")
-})()
+var myMap;
+
+
+
+
+if (root_tag) {
+    const root = createRoot(root_tag)
+    root.render(
+        <App />
+    )
+}
+else console.log("Can't find html root tag id to start app")
+

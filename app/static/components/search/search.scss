@@ -1,0 +1,35 @@
+.ant-input-group-wrapper  {
+    position: fixed;
+    left: calc(var(--step) * 2.5); /* 20px */;
+    top: calc(var(--step) * 2.5); /* 20px */;
+    font-size: calc(var(--step) * 2.5); /* 20px */;
+    height: calc(var(--step) * 4); /* n0px */;
+    width: calc(100vw - calc(var(--step) * 2.5 * 2));
+    background-color: white;
+    border-radius:  var(--step);
+    input {
+        height: calc(var(--step) * 4); /* n0px */;
+    }
+    z-index: 20;
+}
+
+.ant-input-wrapper {
+    border-radius:  var(--step);
+}
+
+.ant-input-group-addon, .ant-input-group-addon .ant-input-search-button {
+    height: calc(var(--step) * 4); /* n0px */;
+    width: calc(var(--step) * 4); /* n0px */;    
+    .anticon.anticon-search {
+        height: 80%;
+        width: 80%;
+    }
+}
+
+.ant-input-search-button {
+    border-radius: var(--step);
+}
+
+.ant-input {
+    font-size: calc(var(--step) * 2.5); /* 20px */;
+}
