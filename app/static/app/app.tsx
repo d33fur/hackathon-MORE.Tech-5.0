@@ -3,6 +3,8 @@ import { useRef } from "react";
 import { Menu } from "../components/menu/menu";
 import { OfficesMap } from "../components/map/map";
 
+import axios from "axios"
+
 import "../components/search/search.scss"
 import { Input, Dropdown } from 'antd'
 const { Search } = Input;
@@ -48,7 +50,12 @@ export function App() {
             <OfficesMap ref={search}/>
             <div>
                 <Dropdown menu={{ items }} placement="bottomLeft">
-                    <Search placeholder="input search text" onSearch={() => {}} enterButton />
+                    <Search placeholder="input search text" onSearch={(text) => {
+                        axios.get("http://0.0.0.0:7000/api/search", { params: { query: text}})
+                        .then(res => {
+                            console.log(JSON.parse(res.data))
+                        })
+                    }} enterButton />
                 </Dropdown>
             </div>
             <Menu onRouteCreate={(cords) => {console.log(search.current); search.current.createRoute(cords)}}></Menu>

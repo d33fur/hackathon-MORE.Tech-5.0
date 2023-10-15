@@ -108,7 +108,6 @@ class servicestime(Base): #время оказания каждой услуги
 
 
     
->>>>>>> app/database/models/user_models.py
 #class banks(Base): #отделения банка
 #    tablename = 'banks'
 #
