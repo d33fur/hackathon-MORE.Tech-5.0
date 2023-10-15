@@ -1,46 +1,88 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useRef } from "react";
+import { Menu } from "../components/menu/menu";
+import { OfficesMap } from "../components/map/map";
+
+import axios from "axios"
+
+import "../components/search/search.scss"
+import type { MenuProps } from 'antd';
+import { Input, Dropdown } from 'antd'
+const { Search } = Input;
+
 
 import { useWindowParams } from "../hooks/useWindowParams";
+
+
+const items: MenuProps['items'] = [
+  {
+    key: '1',
+    label: (
+      <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+        1st menu item
+      </a>
+    ),
+  },
+  {
+    key: '2',
+    label: (
+      <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+        2nd menu item
+      </a>
+    ),
+  },
+  {
+    key: '3',
+    label: (
+      <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+        3rd menu item
+      </a>
+    ),
+  },
+];
+
+
+type HeaderProps = {}
+type HeaderState = {items: MenuProps['items']}
+class Header extends React.Component {
+  state = {
+    items: [
+      
+    ]
+  }
+  constructor(props) {
+    super(props)
+    this.state = {items: this.state.items}
+    console.log(this.state.items)
+  }
+  render = () => {
+    let items = this.state.items 
+    return<div>
+    <Dropdown menu={{ items }} placement="bottomLeft">
+      <Search placeholder="input search text" onSearch={(text) => {
+        axios.get("http://0.0.0.0:7000/api/search", { params: { query: text}})
+        .then(res => {
+                this.setState({items: (Array.from(res.data, (val, idx) => {return {
+                    key: idx, 
+                    label: (<h3 target="_blank" rel="noopener noreferrer">{val}</h3>)
+                }
+            }))})
+        })}}
+        enterButton />
+    </Dropdown>
+  </div>}
+}
 
 export function App() {
     const windowParams = useWindowParams();
     const [width, height] = windowParams.size;
     const ratio = windowParams.ratio
+    const search = useRef(null)
     return (<>
         <div className="typeSystemGrid">
-            <h1 className="maj-t">Лорем импсум</h1>
-            <h1 className="min-t">Спорная точка зрения</h1>
-            <h2 className="maj-t">Лорем импсум</h2>
-            <h2 className="min-t">Спорная точка зрения</h2>
-            <h3 className="maj-t">Лорем импсум</h3>
-            <h3 className="min-t">Спорная точка зрения</h3>
-            <h4 className="maj-t">Лорем импсум</h4>
-            <h4 className="min-t">Спорная точка зрения</h4>
-            <h5 className="maj-t">Лорем импсум</h5>
-            <h5 className="min-t">Спорная точка зрения</h5>
-            <h6 className="maj-t">Лорем импсум</h6>
-            <h6 className="min-t">Спорная точка зрения</h6>
-            <p className="maj-t">Лорем импсум</p>
-            <p className="min-t">Спорная точка зрения</p>
-            <p className="maj-t overline">Лорем импсум</p>
-            <p className="min-t overline">Спорная точка зрения</p>
-            <button className="small">Да</button>
-            <button className="small">Нет</button>
-            <button className="medium">Кнопка</button>
-            <button className="large">Кнопка</button>
-            <button className="flex">Кнопка</button>
-            <div className="card">
-                <h3 className="maj-t -cl-2 -ca-c">Лорем импсум</h3>
-                <p className="min-t -cl-2 -ca-c">Спорная точка зрения</p>
-                <div className="row -cs-1 -ce-2 -ca-s">
-                    <button className="small">Да</button>
-                    <button className="small">Нет</button>
-                </div>
-                <button className="small -cs-2 -ce-3 -ca-e">Нет</button>
-            </div>
-            <h4>Window size {width} x {height}</h4>
-            <h4>Pixel Ratio {ratio}</h4>
-            <h4>Window calc sise {width / ratio} x {height / ratio}</h4>
+            <OfficesMap ref={search}/>
+            <Header/>
+            <Menu onRouteCreate={(cords) => {console.log(search.current); search.current.createRoute(cords)}}></Menu>
         </div>
     </>)
 }

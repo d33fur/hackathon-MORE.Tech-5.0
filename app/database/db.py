@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from database.models.user_models import Base
+from database.parse import parse
+from params import config as env
 
-import params.confing as env
-from database.models.base import Base
-
-URL = f'postgresql+asyncpg://{env.DBUSER}:{env.DBPASSWORD}@{env.DBHOST}:{env.DBPORT}/{env.DBNAME}'
+URL = f'postgresql+psycopg2://{env.DBUSER}:{env.DBPASSWORD}@{env.DBHOST}:{env.DBPORT}/{env.DBNAME}'
 
 def drop_everything(engine):
     """(On a live db) drops all foreign key constraints before dropping all tables.
@@ -53,28 +53,11 @@ def drop_everything(engine):
     trans.commit()
 
 
-engine = create_async_engine(
-    URL, 
-    future=True,
-    echo=False,
-    pool_pre_ping=True
-)
-
-
-async_session = sessionmaker(
-    engine,
-    expire_on_commit=False,
-    class_=AsyncSession
-)
+engine = create_engine(URL)
 
 
 def db_create() -> None:
-    if env.RESET_DB == 'True':
-        sync_url = f'postgresql://{env.DBUSER}:{env.DBPASSWORD}@{env.DBHOST}:{env.DBPORT}/{env.DBNAME}'
-        sync_engine = create_engine(sync_url)
-        drop_everything(sync_engine)
-        Base.metadata.create_all(sync_engine)
-        # db_insert_default_values()
-        print('Database reseted')
-    else:
-        print('Database up-to-date')
+    drop_everything(engine)
+    Base.metadata.create_all(engine)
+    parse()
+    print('Database reseted', flush=True)
