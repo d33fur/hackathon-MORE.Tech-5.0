@@ -10,3 +10,5 @@ node_modules/
 db_data/
 etc-letsencrypt
 dist/
+
+saved_weights_1_cpu.pt

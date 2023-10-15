@@ -3,11 +3,16 @@ from fastapi.responses import JSONResponse
 from database import db
 from database.models import user_models
 
-from schemas.schemas import ATMsList, BranchModel, BranchesList
+from schemas.schemas import ATMsList, BranchModel, BranchesList, UserCoordinates
 from services.test_service import *
+from services import geo, ai
+
 
 
 test_router = APIRouter()
+
+bert_path = 'saved_weights_1_cpu.pt'# in app folder
+ai_search = ai.BERT_search(bert_path)
 
 '''
 @test_router.get('/test', response_model=TestShema)
@@ -16,51 +21,16 @@ async def route_registration() -> JSONResponse:
     return JSONResponse(dict(data), status_code=status.HTTP_200_OK)
 '''
 
-@test_router.get('/get_test_branches', response_model=BranchesList)
-async def get_test_branches() -> JSONResponse:
-    branch = BranchModel(id=0,
-                        salePointName = "ДО «ГУМ» Филиала № 7701 Банка ВТБ (ПАО)",
-                        address = "Г. Москва, Красная площадь, д. 3",
-                        status = "открытая",
-                        openHours = {'пн': [600, 1140], 'вт': [600, 1140], 'ср': [600, 1140], 'чт': [600, 1140], 'пт': [600, 1080], 'сб': [], 'вс': []},
-                        rko = True,
-                        openHoursIndividual = {'пн': [600, 1140], 'вт': [600, 1140], 'ср': [600, 1140], 'чт': [600, 1140], 'пт': [600, 1080], 'сб': [], 'вс': []},
-                        officeType = 'Да (Зона Привилегия)',
-                        salePointFormat = "Универсальный",
-                        suoAvailability = True,
-                        hasRamp= True ,
-                        latitude=55.766045,
-                        longitude=37.638081,
-                        metroStation = [
-                            "Октябрьская (Кольцевая линия)",
-                            "Октябрьская (Калужско-Рижская линия)",
-                            "Шаболовская (Калужско-Рижская линия)",
-                        ],
-                        kep=False,
-                        services=['Сопровождение ипотечных и автокредитов'],
-                        averageQueueTime = [
-                            [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
-                            [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
-                            [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
-                            [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
-                            [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
-                            [0, 0, 0, 0, 1, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0],
-                            [0, 0, 0, 0, 3000, 0, 2, 5, 5, 5, 3, 4, 6, 7, 12, 5, 6, 4, 9, 12,10, 4, 0, 0]
-                        ],
-                        currentQueue = [1045, 1055, 1100]
-                        )
-    branches = [branch]
-    data = BranchesList(branches=branches)
-    return JSONResponse(data.json(), status_code=status.HTTP_200_OK)
-
 @test_router.get('/get_branches', response_model=BranchesList)
-async def get_branches() -> JSONResponse:
+async def get_branches(user_cords: UserCoordinates) -> JSONResponse:
     #Session = db.sessionmaker(bind=db.engine)
     #session = Session()
     with db.sessionmaker(bind=db.engine)() as session:
         branches = session.query(user_models.offices).all()
     
     branches = list(map(lambda x: x.to_json_scheme(), branches))
+
+    branches.sort(key=geo.DistanceSorter(user_cords.latitude, user_cords.longitude))
     data = BranchesList(branches=branches)
     return JSONResponse(data.json(), status_code=status.HTTP_200_OK)
 
@@ -72,8 +42,10 @@ async def get_atms() -> JSONResponse:
 
 @test_router.post('/add_to_queue')
 async def add_to_queue() -> JSONResponse:
-    atms.add
-    atms = []
-    data = ATMsList(atms=atms)
+    data = []
     return JSONResponse(dict(data), status_code=status.HTTP_200_OK)
 
+@test_router.get('/search')
+async def search(query:str) -> JSONResponse:
+    data = ai_search.predict(query)
+    return JSONResponse(data, status_code=status.HTTP_200_OK)

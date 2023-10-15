@@ -4,9 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routers import test_router
 from database.db import db_create
-
+from services import ai
 
 app: FastAPI = FastAPI()
+
 
 
 @app.on_event('startup')

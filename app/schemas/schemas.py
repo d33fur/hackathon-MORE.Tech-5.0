@@ -43,3 +43,7 @@ class BranchesList(BaseModel):
 
 class ATMsList(BaseModel):
     atms: List[ATMModel]
+
+class UserCoordinates(BaseModel):
+    latitude: float
+    longitude: float
